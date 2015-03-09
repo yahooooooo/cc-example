@@ -32,11 +32,14 @@ def main():
 	output = open(output_file, 'w+')
 
 	with concurrent.futures.ProcessPoolExecutor(max_workers=25) as executor:
+		print('Reading files from {i}'.format(i=input_dir))
 		word_counts = executor.map(GetWordCountsForFile, filepaths)
+		print('Calculating final word counts...')
 		result = functools.reduce(ReduceDictionaries, word_counts)
-	
-	for key in sorted(list(result.keys())):
-		output.write(key + '\t' + str(result[key]) + '\n')
+		print('Writing word counts to {o} in alphabetical order...'.format(o=output_file))
+		for key in sorted(list(result.keys())):
+			output.write(key + '\t' + str(result[key]) + '\n')
+		print('Done writing word counts to {o} in alphabetical order...'.format(o=output_file))
 
 	output.close()
 

@@ -12,10 +12,7 @@ class CountDict:
 			self.count_dict[x] += 1
 		except KeyError as e:
 			self.count_dict[x] = 1
-		if self.median == -1:
-			self.median = 1.0*x
-		else:
-			self.RecalculateMedian()
+		self.RecalculateMedian()
 
 	def RecalculateMedian(self):
 		self.median = -1		
@@ -56,10 +53,13 @@ def main():
 	output = open(output_file, 'w+')
 
 	with concurrent.futures.ProcessPoolExecutor(max_workers=25) as executor:
-		for word_counts in executor.map(GetWordCountsByLine, filepaths):
+		print('Reading files from {i}'.format(i=input_dir))
+		for input_file, word_counts in zip(filepaths, executor.map(GetWordCountsByLine, filepaths)):
+			print('Calculating and writing running median for {i}...'.format(i=input_file))
 			for word_count in word_counts:
 				countDict.InsertElement(word_count)
 				output.write(str(countDict.GetMedian()) + '\n')
+		print('Done calculating and writing running median to {o}...'.format(o=output_file))
 
 	output.close()
 

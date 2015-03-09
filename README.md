@@ -46,9 +46,9 @@ has 5 words so the running median for the first line is simply 5.  Since the sec
 	4.0  
 	4.5  
 
-Running Median is implemented in a Python program named `my_running_median.py` that calculates the median number of words per line, for each line of the text files in the `wc_input` directory.  Multiple files in that directory are processed in parallel by the running median program in alphabetical order using the `concurrent.futures` multiprocessing API available in Python 3. The resulting running median for each line is written to a text file named `med_result.txt` in the `wc_output` directory. The program achieves scalability by performing parallel file processing on multicore machines to extract the word count by line, before performing the running median algorithm.
+Running Median is implemented in a Python program named `my_running_median.py` that calculates the median number of words per line, for each line of the text files in the `wc_input` directory.  Multiple files in that directory are processed in parallel by the running median program in alphabetical order using the `concurrent.futures` multiprocessing API available in Python 3. The resulting running median for each line is written to a text file named `med_result.txt` in the `wc_output` directory. The program achieves scalability by performing parallel file processing on multicore machines to extract the word counts per line, before performing the running median algorithm.
 
 Requirements
 -----------------------------------------------------------
 
-The `run.sh` script needs Python3 to run correctly. The dependency is because of the use of the concurrent multiprocessing API.
+The `run.sh` script needs Python3 to run correctly. The dependency is because of the use of the `concurrent.futures` multiprocessing API.
