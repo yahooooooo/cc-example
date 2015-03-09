@@ -62,13 +62,12 @@ def main():
 	filepaths = [os.path.join(input_dir,filename) for filename in os.listdir(input_dir)]
 	output = open(output_file, 'w+')
 
-	# read files in parallel using concurrent.futures API
-	# reduce word count dictionaries obtained from various documents by key
-	# write the resultant word counts alphabetically to output file 
 	with concurrent.futures.ProcessPoolExecutor(max_workers=10) as executor:
 		print('Reading files from {i}'.format(i=input_dir))
+		# read files in parallel using concurrent.futures API
 		for input_file, word_counts in zip(filepaths, executor.map(GetWordCountsByLine, filepaths)):
 			print('Calculating and writing running median for {i}...'.format(i=input_file))
+			# calculate and write running median
 			for word_count in word_counts:
 				countDict.InsertElement(word_count)
 				output.write(str(countDict.GetMedian()) + '\n')
