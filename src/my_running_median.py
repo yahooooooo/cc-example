@@ -2,11 +2,18 @@ import os, fileinput, sys
 import concurrent.futures	
 
 class CountDict:
+	"""CountDict maintains the histogram of word counts.
+	Since there are few distinct word counts by line in a large corpus
+	and most of these are concentrated at lower values,
+	maintaining the number of times a word count has appeared
+	is far more scalable for storage and computing median."""
+
 	count_dict = {}
 	total_count = 0
 	median = -1
 
 	def InsertElement(self, x):
+		"""Insert a count into count_dict and recalculate the median."""
 		self.total_count += 1
 		try:
 			self.count_dict[x] += 1
@@ -15,6 +22,7 @@ class CountDict:
 		self.RecalculateMedian()
 
 	def RecalculateMedian(self):
+		"""Recalculate the median using the histogram of word counts."""
 		self.median = -1		
 		unique_counts = sorted(list(self.count_dict.keys()))
 
@@ -32,9 +40,11 @@ class CountDict:
 				break
 
 	def GetMedian(self):
+		"""Return current median."""
 		return self.median
 
 def GetWordCountsByLine(filepath):
+	"""Create a list of word counts for a document."""
 	word_counts = []
 	for line in fileinput.input(filepath):
 		if line.strip() == '':
@@ -52,7 +62,10 @@ def main():
 	filepaths = [os.path.join(input_dir,filename) for filename in os.listdir(input_dir)]
 	output = open(output_file, 'w+')
 
-	with concurrent.futures.ProcessPoolExecutor(max_workers=25) as executor:
+	# read files in parallel using concurrent.futures API
+	# reduce word count dictionaries obtained from various documents by key
+	# write the resultant word counts alphabetically to output file 
+	with concurrent.futures.ProcessPoolExecutor(max_workers=10) as executor:
 		print('Reading files from {i}'.format(i=input_dir))
 		for input_file, word_counts in zip(filepaths, executor.map(GetWordCountsByLine, filepaths)):
 			print('Calculating and writing running median for {i}...'.format(i=input_file))
